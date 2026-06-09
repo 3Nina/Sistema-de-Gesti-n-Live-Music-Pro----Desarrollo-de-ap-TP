@@ -1,0 +1,71 @@
+Proyecto: Sistema de Gestión "Live Music Pro"
+
+
+Historia:
+
+La productora musical "ORT Sounds" está teniendo problemas para organizar sus próximos eventos. Actualmente, llevan el registro de sus artistas, los álbumes que lanzan y los conciertos programados en archivos de Excel dispersos, lo que genera errores y pérdida de información.
+Te han contratado para desarrollar "Live Music Pro", una aplicación centralizada donde los managers puedan gestionar todo el ecosistema de la productora. El objetivo es que la app permita no solo ver quiénes son los artistas, sino también qué discos tienen y en qué eventos están participando, asegurando que la información persista en el tiempo.
+
+
+Objetivos del Proyecto:
+
+
+1. Arquitectura de Datos (Clases y POO)
+
+A partir del script de base de datos provisto, el equipo deberá:
+Diseñar e implementar las clases Python necesarias que representen las entidades del mundo real.
+Cada clase debe tener su método __init__ y, al menos, dos métodos de instancia (por ejemplo: un método para mostrar la ficha técnica del artista o un método para calcular la antigüedad de un álbum).
+Utilizar listas o diccionarios para procesar los objetos recuperados de la base de datos antes de mostrarlos en la interfaz.
+
+
+2. Persistencia con SQLite
+
+Implementar una capa de datos (funciones) que realice la conexión a la base de datos.
+Desarrollar un CRUD completo (Crear, Leer, Actualizar, Borrar) que afecte a las tablas principales.
+Asegurar que las operaciones de "Baja" y "Modificación" se realicen de forma segura (por ID).
+
+
+3. Interfaz Gráfica (Streamlit)
+
+La aplicación debe ser intuitiva y contar con:
+
+    Menú de Navegación: Diferenciar claramente entre la gestión de Artistas, Álbumes y la Agenda de Conciertos.
+
+    Visualización Dinámica: Listar los datos, permitiendo el uso de filtros (por ejemplo: filtrar álbumes por género o conciertos por ciudad).
+
+    Formularios de Carga: Para las altas debe haber formularios que creen los registros de manera exitosa.
+
+
+4. Lógica de Programación
+
+    Condicionales: Validar que no se intenten cargar campos vacíos o valores erróneos (ej: años de lanzamiento negativos).
+
+    Repetitivas: Utilizar bucles para transformar los registros de la base de datos en objetos de las clases creadas.
+
+    Funciones: El código debe estar modularizado; no debe haber lógica de SQL mezclada directamente con el código de la interfaz.
+
+query_create_artista = "INSERT INTO artistas (nombre, genero, pais) VALUES (?, ?, ?)"
+query_read_all_artistas = "SELECT * FROM artistas"
+query_read_one_artista = "SELECT * FROM artistas WHERE id = ?"
+query_update_artista = "UPDATE artistas SET nombre = ?, genero = ?, pais = ? WHERE id = ?"
+query_delete_artista = "DELETE FROM artistas WHERE id = ?"
+
+query_create_album = "INSERT INTO albumes (titulo, anio_lanzamiento, id_artista) VALUES (?, ?, ?)"
+query_read_all_albumes = "SELECT * FROM albumes"
+query_read_albumes_con_artista = """
+    SELECT al.id, al.titulo, al.anio_lanzamiento, ar.nombre AS artista 
+    FROM albumes al 
+    LEFT JOIN artistas ar ON al.id_artista = ar.id
+"""
+query_update_album = "UPDATE albumes SET titulo = ?, anio_lanzamiento = ?, id_artista = ? WHERE id = ?"
+query_delete_album = "DELETE FROM albumes WHERE id = ?"
+
+query_create_concierto = "INSERT INTO conciertos (nombre_evento, fecha, ciudad, id_artista) VALUES (?, ?, ?, ?)"
+query_read_all_conciertos = "SELECT * FROM conciertos"
+query_read_conciertos_con_artista = """
+    SELECT c.id, c.nombre_evento, c.fecha, c.ciudad, ar.nombre AS artista 
+    FROM conciertos c 
+    LEFT JOIN artistas ar ON c.id_artista = ar.id
+"""
+query_update_concierto = "UPDATE conciertos SET nombre_evento = ?, fecha = ?, ciudad = ?, id_artista = ? WHERE id = ?"
+query_delete_concierto = "DELETE FROM conciertos WHERE id = ?"

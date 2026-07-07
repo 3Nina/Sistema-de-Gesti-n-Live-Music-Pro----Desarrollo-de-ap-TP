@@ -5,7 +5,7 @@ class Artista:
         self.genero = genero
         self.pais = pais
 
-    def ficha_tecnica(self):
+    def obtener_ficha_tecnica(self):
         return f"Nombre del artista: {self.nombre} | Género que toca: {self.genero} | Origen: {self.pais}"
 
     def es_local(self, pais_productora="Argentina"):

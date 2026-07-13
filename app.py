@@ -8,20 +8,13 @@ from conciertos import Concierto
 st.set_page_config(page_title="Live Music Pro", layout="wide")
 st.title("Live Music Pro - Sistema de Gestión")
 
-# Menú Lateral de Navegación
 menu = st.sidebar.selectbox("Módulo de Gestión", ["Artistas", "Álbumes", "Agenda de Conciertos"])
 
-# =====================================================================
-# MÓDULO ARTISTAS
-# =====================================================================
 if menu == "Artistas":
     st.header("Gestión de Artistas")
-    
-    # Transformar registros de BD en Objetos (Bucle/Repetitiva)
     artistas_db = db.db_read_all_artistas()
     lista_artistas = [Artista(row[0], row[1], row[2], row[3]) for row in artistas_db]
 
-    # Formulario de Alta con Validaciones
     with st.expander("Registrar Nuevo Artista"):
         with st.form("form_alta_artista"):
             nombre = st.text_input("Nombre del Artista / Banda")
@@ -37,7 +30,7 @@ if menu == "Artistas":
                     st.success(f"¡{nombre} registrado con éxito!")
                     st.rerun()
 
-    # Visualización y Filtros
+
     st.subheader("Listado de Artistas")
     filtro_pais = st.text_input("Filtrar por país:")
     
@@ -46,7 +39,6 @@ if menu == "Artistas":
             col1, col2, col3 = st.columns([3, 1, 1])
             col1.write(art.obtener_ficha_tecnica())
             
-            # Botón Modificar Seguro (por ID)
             if col2.button("Editar", key=f"edit_art_{art.id}"):
                 st.session_state[f"editando_art_{art.id}"] = True
                 
@@ -60,28 +52,23 @@ if menu == "Artistas":
                         st.session_state[f"editando_art_{art.id}"] = False
                         st.rerun()
 
-            # Botón Eliminar Seguro (por ID)
             if col3.button("Borrar", key=f"del_art_{art.id}"):
                 db.db_delete_artista(art.id)
                 st.warning(f"Artista ID {art.id} eliminado.")
                 st.rerun()
 
-# =====================================================================
-# MÓDULO ÁLBUMES
-# =====================================================================
 elif menu == "Álbumes":
     st.header("Gestión de Álbumes / Discos")
     
-    # Cargar artistas para los selectores de los formularios
     artistas_db = db.db_read_all_artistas()
-    dict_artistas = {row[1]: row[0] for row in artistas_db} # Nombre: ID
+    dict_artistas = {row[1]: row[0] for row in artistas_db} 
     
     albumes_db = db.db_read_albumes_con_artista()
     lista_albumes = [Album(row[0], row[1], row[2], row[3]) for row in albumes_db]
 
     with st.expander("Registrar Nuevo Álbum"):
         if not dict_artistas:
-            st.warning("⚠️ Primero debés cargar al menos un artista.")
+            st.warning("Primero debés cargar al menos un artista.")
         else:
             with st.form("form_alta_album"):
                 titulo = st.text_input("Título del Álbum")
@@ -105,10 +92,7 @@ elif menu == "Álbumes":
         if col2.button("Borrar", key=f"del_alb_{alb.id}"):
             db.db_delete_album(alb.id)
             st.rerun()
-
-# =====================================================================
-# MÓDULO AGENDA DE CONCIERTOS
-# =====================================================================
+        
 elif menu == "Agenda de Conciertos":
     st.header("Agenda de Eventos y Conciertos")
     
@@ -143,7 +127,6 @@ elif menu == "Agenda de Conciertos":
     
     for con in lista_conciertos:
         if filtro_ciudad.lower() in con.ciudad.lower():
-            # Validación visual si el concierto ya pasó
             estado = "(Finalizado)" if con.paso_el_evento() else "(Vigente)"
             col1, col2 = st.columns([4, 1])
             col1.write(f"{con.obtener_info_agenda()} {estado}")

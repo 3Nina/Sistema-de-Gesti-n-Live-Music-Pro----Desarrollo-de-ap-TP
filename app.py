@@ -122,7 +122,7 @@ elif menu == "Agenda de Conciertos":
                         st.success(f"¡{nombre_evento} agendado correctamente!")
                         st.rerun()
 
-    st.subheader("Próximos Shows y Conciertos Históricos")
+    st.subheader("Próximos Shows")
     filtro_ciudad = st.text_input("Filtrar eventos por ciudad:")
     
     for con in lista_conciertos:
